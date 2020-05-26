@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import numpy as np
 from datetime import date
+import os
 
 
 def G(x, sigma, mu):
