@@ -139,4 +139,4 @@ async def weather(ctx):
     await ctx.send(compose(temp_out, w_cond_out, r_p_out, ws_out, wind_destination_out, wind_burst_out))
 
 
-client.run("NzEwMjQwMzg0NTI5MjAzMjkz.XrxlFg.fWdpgG7RvkbyEecJ1RE4Xs6tpPI")
+client.run('TOKEN')
