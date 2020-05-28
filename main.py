@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import numpy as np
 from datetime import date
 import os
@@ -124,6 +124,17 @@ def compose(temp, w_cond, r_p, ws, wind_destination, wind_burst):
                    "Соблюдайте осторожность и не выходите на открытую местность без особой нужды!"
     prognoz += "\n```"
     return prognoz
+
+
+def diceparser(n, d, p):
+    r = []
+    sum = 0
+    choice = list(range(1, d+1))
+    for i in range(n):
+        num = np.random.choice(choice)
+        r.append(num)
+        sum += num + p
+    return r, sum
 
 
 client = commands.Bot(command_prefix=".")
