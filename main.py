@@ -5,6 +5,9 @@ from datetime import date
 import os
 
 
+bot_prefix = "]"
+
+
 def G(x, sigma, mu):
     return 1 / (sigma * np.power(2 * np.pi, 0.5)) * np.exp(-0.5 * ((x - mu) ** 2 / sigma ** 2))
 
@@ -137,13 +140,39 @@ def diceparser(n, d, p):
     return r, sum
 
 
+def parse_dp(s: str):
+    n = 0
+    d = 0
+    p = 0
+    if s[0] == bot_prefix:
+        temp = s[1:]
+        w1 = temp.split("d")
+        try:
+            n = int(w1[0])
+        except ValueError:
+            print("Value error")
+        if "+" in w1[1]:
+            w2 = w1[1].split("+")
+            try:
+                d = int(w2[0])
+                p = int(w2[1])
+            except ValueError:
+                print("Value error")
+        else:
+            try:
+                d = int(w1[1])
+                p = 0
+            except ValueError:
+                print("Value error")
+    return n, d, p
+
+
 client = commands.Bot(command_prefix=".")
 
 
 @client.event
 async def on_ready():
     print("Bot is ready")
-
 
 @client.command()
 async def weather(ctx):
