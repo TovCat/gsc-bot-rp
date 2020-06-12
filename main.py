@@ -8,7 +8,7 @@ from asyncio import sleep
 
 bot_prefix = "."
 weather_option = {
-    "channel": 0,
+    "channel": 713931459316023346,
     "interval": 24,
     "start": 0
 }
@@ -189,9 +189,8 @@ async def weather(ctx):
 
 
 @client.command()
-async def set_weather_option(ctx, arg):
+async def set_weather_option(ctx, *args):
     if ctx.message.author.id =='236914956086280192':
-        words = arg.split()
         global weather_option
         try:
             if words[0] in weather_option:
@@ -207,9 +206,10 @@ async def start_weather(ctx):
     global weather_started
     if ctx.message.author.id =='236914956086280192':
         weather_started = True
+        await ctx.send("Weather started")
 
 
-@tasks.loop(seconds=60)
+@tasks.loop(seconds=5)
 async def generate_weather():
     while True:
         if weather_started:
@@ -217,7 +217,7 @@ async def generate_weather():
             wind_burst_out = weather_conditions()
             message = compose(temp_out, w_cond_out, r_p_out, ws_out, wind_destination_out, wind_burst_out)
             channel = client.get_channel(weather_option["channel"])
-            await channel.senf(message)
+            await channel.send(message)
 
 
 
