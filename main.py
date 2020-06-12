@@ -6,7 +6,7 @@ import os
 from asyncio import sleep
 
 
-bot_prefix = "]"
+bot_prefix = "."
 weather_option = {
     "channel": 0,
     "interval": 24,
