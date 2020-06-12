@@ -1,8 +1,18 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import numpy as np
 from datetime import date
 import os
+from asyncio import sleep
+
+
+bot_prefix = "]"
+weather_option = {
+    "channel": 0,
+    "interval": 24,
+    "start": 0
+}
+weather_started = False
 
 
 def G(x, sigma, mu):
@@ -126,7 +136,45 @@ def compose(temp, w_cond, r_p, ws, wind_destination, wind_burst):
     return prognoz
 
 
-client = commands.Bot(command_prefix=".")
+def diceparser(n, d, p):
+    r = []
+    sum = 0
+    choice = list(range(1, d+1))
+    for i in range(n):
+        num = np.random.choice(choice)
+        r.append(num)
+        sum += num + p
+    return r, sum
+
+
+def parse_dp(s: str):
+    n = 0
+    d = 0
+    p = 0
+    if s[0] == bot_prefix:
+        temp = s[1:]
+        w1 = temp.split("d")
+        try:
+            n = int(w1[0])
+        except ValueError:
+            print("Value error")
+        if "+" in w1[1]:
+            w2 = w1[1].split("+")
+            try:
+                d = int(w2[0])
+                p = int(w2[1])
+            except ValueError:
+                print("Value error")
+        else:
+            try:
+                d = int(w1[1])
+                p = 0
+            except ValueError:
+                print("Value error")
+    return n, d, p
+
+
+client = commands.Bot(command_prefix=bot_prefix)
 
 
 @client.event
@@ -135,9 +183,43 @@ async def on_ready():
 
 
 @client.command()
+@commands.is_owner()
 async def weather(ctx):
     temp_out, w_cond_out, r_p_out, ws_out, ws_interval_out, wind_destination_out, wind_burst_out = weather_conditions()
     await ctx.send(compose(temp_out, w_cond_out, r_p_out, ws_out, wind_destination_out, wind_burst_out))
+
+
+@client.command()
+@commands.is_owner()
+async def set_weather_option(ctx, arg):
+    words = arg.split()
+    global weather_option
+    try:
+        if words[0] in weather_option:
+            weather_option[words[0]] = int(words[1])
+        else:
+            await ctx.send("Ашипка")
+    except ValueError:
+        await ctx.send("Ашипка")
+
+
+@client.command()
+@commands.is_owner()
+async def start_weather(ctx):
+    global weather_started
+    weather_started = True
+
+
+@tasks.loop(seconds=60)
+async def generate_weather():
+    while True:
+        if weather_started:
+            temp_out, w_cond_out, r_p_out, ws_out, ws_interval_out, wind_destination_out, \
+            wind_burst_out = weather_conditions()
+            message = compose(temp_out, w_cond_out, r_p_out, ws_out, wind_destination_out, wind_burst_out)
+            channel = client.get_channel(weather_option["channel"])
+            await channel.senf(message)
+
 
 
 client.run(os.environ['TOKEN'])
