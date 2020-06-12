@@ -183,31 +183,30 @@ async def on_ready():
 
 
 @client.command()
-@commands.is_owner()
 async def weather(ctx):
     temp_out, w_cond_out, r_p_out, ws_out, ws_interval_out, wind_destination_out, wind_burst_out = weather_conditions()
     await ctx.send(compose(temp_out, w_cond_out, r_p_out, ws_out, wind_destination_out, wind_burst_out))
 
 
 @client.command()
-@commands.is_owner()
 async def set_weather_option(ctx, arg):
-    words = arg.split()
-    global weather_option
-    try:
-        if words[0] in weather_option:
-            weather_option[words[0]] = int(words[1])
-        else:
+    if ctx.message.author.id =='236914956086280192':
+        words = arg.split()
+        global weather_option
+        try:
+            if words[0] in weather_option:
+                weather_option[words[0]] = int(words[1])
+            else:
+                await ctx.send("Ашипка")
+        except ValueError:
             await ctx.send("Ашипка")
-    except ValueError:
-        await ctx.send("Ашипка")
 
 
 @client.command()
-@commands.is_owner()
 async def start_weather(ctx):
     global weather_started
-    weather_started = True
+    if ctx.message.author.id =='236914956086280192':
+        weather_started = True
 
 
 @tasks.loop(seconds=60)
