@@ -1,0 +1,12 @@
+/test*
+*.txt
+*.cube
+*.cif
+__pycache__/
+.idea/
+*.cub
+*.out
+*.xyz
+*.kujo
+*.chg
+*.chg
