@@ -1,5 +1,4 @@
 
-
 class WeatherText:
 
     def __init__(self):
@@ -14,12 +13,10 @@ class WeatherText:
         for x in breaks:
             title = contents[x]
             i = x + 1
-            str = contents[i]
+            string = contents[i]
             dict_list = []
-            while str != "":
-                dict_list.append(str)
+            while string != "":
+                dict_list.append(string)
                 i += 1
-                str = contents[i]
+                string = contents[i]
             self.weather_strings[title] = dict_list
-
-
